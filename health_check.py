@@ -38,22 +38,24 @@ def ram_usage() -> dict:
     """
     ram_system = psutil.virtual_memory()
     ram_checks = ["total", "available", "used", "percent"]
-    ram_system = {check: getattr(ram_system, check) for check in ram_checks}
-    return ram_system
+    return {check: getattr(ram_system, check) for check in ram_checks}
 
 
 def disk_utilization() -> dict:
     """
     get disk utilization from psutil.disk_partitions and disk_usage for each partition
+    :rtype: object
     :return: dictionary of each partition and its respective disk usage values
     """
     disk_part = psutil.disk_partitions()
     disk_checks = ["total", "used", "free", "percent"]
-    disk_util = {mount.mountpoint: {check: getattr(psutil.disk_usage(mount.mountpoint), check)
-                                    for check in disk_checks}
-                 for mount in disk_part}
-
-    return disk_util
+    return {
+        mount.mountpoint: {
+            check: getattr(psutil.disk_usage(mount.mountpoint), check)
+            for check in disk_checks
+        }
+        for mount in disk_part
+    }
 
 
 def network_utilization() -> dict:
@@ -63,8 +65,7 @@ def network_utilization() -> dict:
     """
     net_util = psutil.net_io_counters()
     net_checks = ["bytes_sent", "bytes_recv", "errin", "errout", "dropin", "dropout"]
-    net_system = {check: getattr(net_util, check) for check in net_checks}
-    return net_system
+    return {check: getattr(net_util, check) for check in net_checks}
 
 
 if __name__ == "__main__":
