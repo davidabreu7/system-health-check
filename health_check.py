@@ -15,7 +15,6 @@ def main():
     print(cpu_times())
     print(ram_usage())
     print(disk_utilization())
-    print(network_utilization())
 
 
 def cpu_times() -> dict:
@@ -58,14 +57,16 @@ def disk_utilization() -> dict:
     }
 
 
-def network_utilization() -> dict:
-    """
-    get network io counters from system nic
-    :return: dictionary with network io counters
-    """
-    net_util = psutil.net_io_counters()
-    net_checks = ["bytes_sent", "bytes_recv", "errin", "errout", "dropin", "dropout"]
-    return {check: getattr(net_util, check) for check in net_checks}
+# def network_utilization() -> dict: - TODO
+#     """
+#     get network io counters from system nic
+#     :return: dictionary with network io counters
+#     """
+#     net_util = psutil.net_io_counters()
+#     net_checks = ["bytes_sent", "bytes_recv", "errin", "errout", "dropin", "dropout"]
+#     nic_speed = {"speed": psutil.net_if_stats()}
+#     net_dict = {check: getattr(net_util, check) for check in net_checks}
+#     return {**net_dict, **nic_speed}
 
 
 if __name__ == "__main__":
