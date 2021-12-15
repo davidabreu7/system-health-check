@@ -1,7 +1,7 @@
 import smtplib
 def send_email(body=""):
-    from_add = "david.abreu@outlook.com"
-    to_add = "david.abreu@outlook.com"
+    from_add = "me@email.com"
+    to_add = "you@email.com"
     smtp_server = smtplib.SMTP("smtp.office365.com", 587)
     smtp_server.ehlo()
     smtp_server.starttls()
