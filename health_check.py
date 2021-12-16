@@ -1,5 +1,5 @@
 """
-Script made by David Abreu
+Application made by David Abreu
 github: github.com/davidabreu7/system-health-check
 
 System health monitor script in python that checks system metrics, store data in csv

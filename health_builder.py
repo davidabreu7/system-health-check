@@ -1,15 +1,23 @@
-# import csv
+"""
+Application made by David Abreu
+github: github.com/davidabreu7/system-health-check
+
+System health monitor script in python:
+ - checks system metrics,
+ - send alert emails
+ - store data in csv to make reports based on metrics collectd (TODO)
+"""
 import math
 import os.path
 import socket
 import sys
-from datetime import datetime
 import logbook
-
+from datetime import datetime
 from health_email import send_email
 from health_check import cpu_times, disk_utilization, ram_usage
 
 time_now = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
+warnings = []
 
 
 def main():
@@ -17,6 +25,9 @@ def main():
     parse_cpu()
     print(parse_memory())
     print(parse_disk())
+    if len(warnings) > 0:
+        email_body = "".join(warn + "\n" for warn in warnings)
+        send_email(f"Subject: ALERTA {socket.gethostname()} - servidores DIPROD\n\n{email_body}")
 
 
 def convert_size(size_bytes):
@@ -33,10 +44,10 @@ def parse_cpu():
     cpu_data = cpu_times()
     print(cpu_data)
     alert_trigger = 10
-    cpu_log = logbook.Logger("CPU")
+    log_cpu = logbook.Logger("CPU")
     if cpu_data["percent"] > alert_trigger:
-        cpu_log.warning(f"high cpu usage: {cpu_data['percent']:.2f}")
-        send_email(f"Subject: ALERTA: {socket.gethostname()}\n\n alto uso de CPU: {cpu_data['percent']:.2f}")
+        log_cpu.warning(f"high cpu usage: {cpu_data['percent']:.2f}")
+        warnings.append(f"ALERTA: {socket.gethostname()}\n\n alto uso de CPU: {cpu_data['percent']:.2f}")
 
 
 def parse_memory():
@@ -47,7 +58,7 @@ def parse_memory():
 
     if ram_data["percent"] > alert_trigger:
         log_ram.warning(f"high memory usage: {ram_data['percent']}")
-        send_email(f"Subject: ALERTA: {socket.gethostname()}\n\n alto uso de MEMORIA: {ram_data['percent']:.2f}")
+        warnings.append(f"ALERTA: {socket.gethostname()}\n\n alto uso de MEMORIA: {ram_data['percent']:.2f}")
     return ram_parsed
 
 
@@ -58,8 +69,9 @@ def parse_disk():
     for mount_dir, mount_space in disk_data.items():
         if disk_data[mount_dir]["percent"] > alert_trigger:
             log_disk.warning(f"high disk usage: {mount_space['percent']}")
-            send_email(f"Subject: ALERTA: {socket.gethostname()}\n\n alto uso de DISCO: {disk_data[mount_dir]['percent']:.2f}")
-    return {mount: {category: convert_size(space)for category, space in disk_space.items() if category != "percent"}
+            warnings.append(
+                f"ALERTA: {socket.gethostname()}\n\n alto uso de DISCO: {disk_data[mount_dir]['percent']:.2f}")
+    return {mount: {category: convert_size(space) for category, space in disk_space.items() if category != "percent"}
             for mount, disk_space in disk_data.items()}
 
 
