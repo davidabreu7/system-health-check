@@ -8,15 +8,6 @@ and make reports based on metrics  collectd
 import psutil
 
 
-def main():
-    """
-    function calls and printing values
-    """
-    print(cpu_times())
-    print(ram_usage())
-    print(disk_utilization())
-
-
 def cpu_times() -> dict:
     """
     get CPU counters from psutil.cpu_times() -> user, system, idle
@@ -55,15 +46,3 @@ def disk_utilization() -> dict:
         }
         for mount in disk_part
     }
-
-
-# def network_utilization() -> dict: - TODO
-#     """
-#     get network io counters from system nic
-#     :return: dictionary with network io counters
-#     """
-#     net_util = psutil.net_io_counters()
-#     net_checks = ["bytes_sent", "bytes_recv", "errin", "errout", "dropin", "dropout"]
-#     nic_speed = {"speed": psutil.net_if_stats()}
-#     net_dict = {check: getattr(net_util, check) for check in net_checks}
-#     return {**net_dict, **nic_speed}

@@ -31,6 +31,11 @@ def main():
 
 
 def convert_size(size_bytes):
+    """
+    byte converter function
+    :param size_bytes:
+    :return: return the biggest possible size
+    """
     if size_bytes == 0:
         return "0B"
     size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
@@ -41,8 +46,12 @@ def convert_size(size_bytes):
 
 
 def parse_cpu():
+    """
+    gets info from cpu_times() and check alert trigger
+    If alert is triggered logs event and sends email
+    :return:
+    """
     cpu_data = cpu_times()
-    print(cpu_data)
     alert_trigger = 10
     log_cpu = logbook.Logger("CPU")
     if cpu_data["percent"] > alert_trigger:
@@ -51,6 +60,11 @@ def parse_cpu():
 
 
 def parse_memory():
+    """
+    gets info from ram_usage() and checks alert trigger
+    If alert is triggered logs event and sends email
+    :return: ram_usage() converted with convert_size()
+    """
     ram_data = ram_usage()
     alert_trigger = 10
     ram_parsed = {key: convert_size(value) for key, value in ram_data.items() if key != "percent"}
@@ -63,6 +77,11 @@ def parse_memory():
 
 
 def parse_disk():
+    """
+    gets info from disk_utilizaiton() and checks alert trigger
+    If alert is triggered logs event and sends email
+    :return: disk_utilization() converted with convert_size()
+    """
     disk_data = disk_utilization()
     alert_trigger = 10
     log_disk = logbook.Logger("DISK")
@@ -74,11 +93,6 @@ def parse_disk():
     return {mount: {category: convert_size(space) for category, space in disk_space.items() if category != "percent"}
             for mount, disk_space in disk_data.items()}
 
-
-# parse network -TODO
-# def parse_network():
-#     net_data = network_utilization()
-#     print(net_data)
 
 def init_logging():
     if not os.path.exists("../log"):
