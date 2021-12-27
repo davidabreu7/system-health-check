@@ -13,8 +13,8 @@ import socket
 import sys
 import logbook
 from datetime import datetime
-from health_email import send_email
-from health_check import cpu_times, disk_utilization, ram_usage
+from send_email import send_email
+from system_check import cpu_times, disk_utilization, ram_usage
 
 time_now = datetime.now().strftime('%d-%b-%Y %H:%M:%S')
 warnings = []
@@ -81,10 +81,10 @@ def parse_disk():
 #     print(net_data)
 
 def init_logging():
-    if not os.path.exists("log"):
-        os.mkdir("log")
+    if not os.path.exists("../log"):
+        os.mkdir("../log")
     level = logbook.WARNING
-    log_path = os.path.join("log", socket.gethostname()) + ".log"
+    log_path = os.path.join("../log", socket.gethostname()) + ".log"
 
     if log_path:
         logbook.FileHandler(log_path, level=level).push_application()

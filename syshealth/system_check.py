@@ -67,7 +67,3 @@ def disk_utilization() -> dict:
 #     nic_speed = {"speed": psutil.net_if_stats()}
 #     net_dict = {check: getattr(net_util, check) for check in net_checks}
 #     return {**net_dict, **nic_speed}
-
-
-if __name__ == "__main__":
-    main()
